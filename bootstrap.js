@@ -40,7 +40,7 @@
             // load assets
             files.forEach(function (filePath) {
                 if (filePath.substr(-3) == '.js'
-                    && filePath.substr(-6) == '.lt.js'
+                    && filePath.substr(-6) != '.lt.js'
                 ) {
                     loadJsFile(filePath);
                 } else if (filePath.substr(-4) == '.css') {
@@ -52,8 +52,8 @@
 
             // load .lt.js file
             files.forEach(function (filePath) {
-                if (filePath.substr(-6)) {
-                    loadLtJsFile();
+                if (filePath.substr(-6) == '.lt.js') {
+                    loadLtJsFile(filePath);
                 }
             });
         }
@@ -63,7 +63,7 @@
         }
 
         function loadCssFile (path) {
-            lt.objs.plugins.load_css(path);
+            lt.objs.plugins.__BEH__load_css(path);
         }
 
         function loadLessFile (path) {
@@ -75,7 +75,10 @@
         }
 
         function loadLtJsFile (path) {
-            require(path);
+            var link = document.createElement('link');
+            link.setAttribute('type', 'text/javascript');
+            link.setAttribute('src', 'file://' + path);
+            document.head.appendChild(link);
         }
     }
 
@@ -86,16 +89,16 @@
         window.ltshunt = ltshuntReal;
     }
 
-    function walk(path, output) {
+    function walk(pathToWalk, output) {
         if (!output) {
             output = [];
         }
 
-        if (isFile(path)) {
-            output.push(path);
-        } else if (isDirectory(path)) {
-            fs.readdirSync(path).forEach(function (name) {
-                walk(path.join(path, name), output);
+        if (isFile(pathToWalk)) {
+            output.push(pathToWalk);
+        } else if (isDirectory(pathToWalk)) {
+            fs.readdirSync(pathToWalk).forEach(function (name) {
+                walk(path.join(pathToWalk, name), output);
             });
         }
         return output;

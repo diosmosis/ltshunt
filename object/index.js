@@ -9,7 +9,7 @@ function ObjectTemplate(objectNameKeyword) {
     this._typename = objectNameKeyword;
 }
 
-ObjectTempalte.prototype.new = function () {
+ObjectTemplate.prototype.new = function () {
     return lt.object.create(this._typename);
 };
 
@@ -33,7 +33,7 @@ exports.type = function (typename, properties) {
 
     lt.object.object_STAR_.apply(null, args);
 
-    return new ObjectTempate(objectTypeNameKeyword);
+    return new ObjectTemplate(objectTypeNameKeyword);
 };
 
 module.exports = exports;

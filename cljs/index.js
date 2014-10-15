@@ -19,9 +19,9 @@ exports.vector = function (data) {
 /**
  * TODO
  */
-exports.set = function (data) {
+exports.set = function () {
     var setMap = {};
-    data.forEach(function (value) {
+    [].concat(arguments).forEach(function (value) {
         setMap[value] = null;
     });
 
@@ -61,7 +61,7 @@ exports.variant = function (obj) {
         return exports.vector(obj);
     } else if (typeof obj == 'object') {
         if (isSet(obj)) {
-            return exports.set(obj);
+            return exports.set.apply(null, Object.keys(obj));
         } else {
             return exports.map(obj);
         }
