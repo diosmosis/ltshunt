@@ -5,8 +5,13 @@ var exports = {},
 /**
  * TODO
  */
-exports.keyword = function (name) {
-    return new cljs.core.Keyword(ns.current, name, ns.current + '/' + name); // TODO: need hash?
+exports.keyword = function (name, namespace) {
+    namespace = namespace === undefined ? ns.current : namespace;
+
+    var fqn = namespace ? (namespace + '/') : '';
+    fqn += name;
+
+    return new cljs.core.Keyword(namespace, name, fqn); // TODO: need hash?
 };
 
 /**
@@ -20,16 +25,27 @@ exports.vector = function (data) {
  * TODO
  */
 exports.set = function () {
-    var setMap = {};
-    [].concat(arguments).forEach(function (value) {
-        setMap[value] = null;
-    });
+    var pairs = [];
+    for (var key in arguments) {
+        if (!arguments.hasOwnProperty(key)) {
+            continue;
+        }
+
+        pairs.push([arguments[key], null]);
+    }
 
     return new cljs.core.PersistentHashSet(
         null,
-        exports.map(setMap),
+        exports.pairsToMap(pairs),
         null
     );
+};
+
+/**
+ * TODO
+ */
+exports.pairsToMap = function (pairs) {
+    return new cljs.core.PersistentArrayMap(null, pairs.length, pairs, null);
 };
 
 /**
@@ -43,14 +59,14 @@ exports.map = function (object) {
         }
 
         if (key.substr(0, 1) == ':') {
-            pairs.push(exports.keyword(key));
+            pairs.push(exports.keyword(key.substr(1), null));
         } else {
             pairs.push(key);
         }
 
         pairs.push(object[key]);
     }
-    return new cljs.core.PersistentArrayMap(null, pairs.length, pairs, null);
+    return exports.pairsToMap(pairs);
 };
 
 /**
@@ -59,7 +75,10 @@ exports.map = function (object) {
 exports.variant = function (obj) {
     if (obj instanceof Array) {
         return exports.vector(obj);
-    } else if (typeof obj == 'object') {
+    } else if (obj !== null
+               && typeof obj == 'object'
+               && obj.constructor.name == 'Object'
+    ) {
         if (isSet(obj)) {
             return exports.set.apply(null, Object.keys(obj));
         } else {

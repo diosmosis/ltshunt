@@ -22,12 +22,21 @@ exports.type = function (typename, properties) {
             objectTypeNameKeyword
         ];
 
+    if (properties[':tags']) {
+        var setElements = [];
+        for (var i = 0; i != properties[':tags'].length; ++i) {
+            var tagName = properties[':tags'][i].substring(1);
+            setElements.push(cljs.keyword(tagName, null));
+        }
+        properties[':tags'] = cljs.set(setElements);
+    }
+
     for (var key in properties) {
         if (!properties.hasOwnProperty(key)) {
             continue;
         }
 
-        args.push(cljs.keyword(key));
+        args.push(cljs.keyword(key.substr(1), null));
         args.push(cljs.variant(properties[key]));
     }
 

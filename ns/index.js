@@ -7,7 +7,7 @@ function ns(namespace) {
 }
 
 ns.__defineGetter__('current', function () {
-    if (currentNamespaceFile != getCallingFile()) {
+    if (!fileInCallStack(currentNamespaceFile)) {
         currentNamspace = "";
     }
 
@@ -15,6 +15,21 @@ ns.__defineGetter__('current', function () {
 });
 
 function getCallingFile() {
+    var stack = getStack();
+    return stack[1].getFileName();
+}
+
+function fileInCallStack(file) {
+    var stack = getStack();
+    for (var i = 0; i != stack.length; ++i) {
+        if (stack[i].getFileName() == file) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function getStack() {
     var original = Error.prepareStackTrace;
     Error.prepareStackTrace = function(_, stack){ return stack; };
 
@@ -24,7 +39,7 @@ function getCallingFile() {
 
     Error.prepareStackTrace = original;
 
-    return stack[1].getFileName();
+    return stack;
 }
 
 module.exports = ns;

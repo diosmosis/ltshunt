@@ -5,13 +5,13 @@ var exports = {},
  * TODO
  */
 exports.directive = function (appName, directiveName, attributes) {
-    var element = angular.element(directiveName);
+    var element = window.document.createElement(directiveName);
     for (var key in attributes) {
         if (!attributes.hasOwnProperty(key)) {
             continue;
         }
 
-        element.attr(key, attributes[key]);
+        element.setAttribute(key, attributes[key]);
     }
 
     angular.module(appName).config(function ($compile, $rootScope) {

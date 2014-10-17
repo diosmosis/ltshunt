@@ -58,15 +58,15 @@
             });
         }
 
-        function loadJsFile (path) {
+        function loadJsFile(path) {
             require(path);
         }
 
-        function loadCssFile (path) {
+        function loadCssFile(path) {
             lt.objs.plugins.__BEH__load_css(path);
         }
 
-        function loadLessFile (path) {
+        function loadLessFile(path) {
             var link = document.createElement('link');
             link.setAttribute('rel', 'stylesheet/less');
             link.setAttribute('type', 'text/css');
@@ -74,8 +74,8 @@
             document.head.appendChild(link);
         }
 
-        function loadLtJsFile (path) {
-            var link = document.createElement('link');
+        function loadLtJsFile(path) {
+            var link = document.createElement('script');
             link.setAttribute('type', 'text/javascript');
             link.setAttribute('src', 'file://' + path);
             document.head.appendChild(link);
