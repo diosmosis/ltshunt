@@ -35,7 +35,13 @@
             loadComponent(name);
         });
 
+        // bootstrap angular app
         window.angular.bootstrap(document, [thisApp]);
+
+        // make sure less files are loaded
+        if (window.less) {
+            window.less.refresh(window.less.env === 'development');
+        }
 
         function loadComponent(name) {
             var files = walk(path.join(componentsRoot, name));
@@ -70,11 +76,18 @@
         }
 
         function loadLessFile(path) {
+            if (!window.less) {
+                console.log(".less file included in component but less.js is not loaded in LightTable!");
+                return;
+            }
+
             var link = document.createElement('link');
             link.setAttribute('rel', 'stylesheet/less');
             link.setAttribute('type', 'text/css');
             link.setAttribute('href', 'file://' + path);
             document.head.appendChild(link);
+
+            window.less.sheets.push(link);
         }
 
         function loadLtJsFile(path) {
