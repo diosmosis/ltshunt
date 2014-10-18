@@ -1,4 +1,5 @@
 var exports = {},
+    document = window.document,
     angular = window.angular;
 
 /**
@@ -14,7 +15,7 @@ exports.directive = function (appName, directiveName, attributes) {
         element.setAttribute(key, attributes[key]);
     }
 
-    angular.module(appName).config(function ($compile, $rootScope) {
+    angular.element(document).injector().invoke(function ($compile, $rootScope) {
         $compile(element)($rootScope.$new());
     });
 
