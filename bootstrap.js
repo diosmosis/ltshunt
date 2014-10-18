@@ -20,7 +20,8 @@
      */
     function bootstrap(pathToShunt, thisApp) {
         var pluginRoot = this.cpd(),
-            componentsRoot = path.join(pluginRoot, 'components');
+            componentsRoot = path.join(pluginRoot, 'components'),
+            delegatedRequires = [];
 
         if (!ltshunt.__loaded) {
             requireLtShunt(path.join(pluginRoot, pathToShunt));
@@ -30,21 +31,41 @@
             return;
         }
 
-        var components = fs.readdirSync(componentsRoot);
-        components.forEach(function (name) {
-            loadComponent(name);
-        });
+        loadApp();
+        loadAllComponents();
+        bootstrapAngular();
 
-        // bootstrap angular app
-        window.angular.bootstrap(document, [thisApp]);
+        delegatedRequires.forEach(function (path) {
+            loadJsFile(path);
+        });
 
         // make sure less files are loaded
         if (window.less) {
             window.less.refresh(window.less.env === 'development');
         }
 
-        function loadComponent(name) {
-            var files = walk(path.join(componentsRoot, name));
+        function loadApp() {
+            var appFile = path.join(componentsRoot, 'app.js');
+
+            require(appFile);
+        }
+
+        function bootstrapAngular() {
+            window.angular.bootstrap(document, [thisApp]);
+        }
+
+        function loadAllComponents() {
+            var components = fs.readdirSync(componentsRoot);
+            components.forEach(function (name) {
+                var componentPath = path.join(componentsRoot, name);
+                if (isDirectory(componentPath)) {
+                    loadComponent(componentPath);
+                }
+            });
+        }
+
+        function loadComponent(componentPath) {
+            var files = walk(componentPath);
 
             // load assets
             files.forEach(function (filePath) {
@@ -91,10 +112,7 @@
         }
 
         function loadLtJsFile(path) {
-            var link = document.createElement('script');
-            link.setAttribute('type', 'text/javascript');
-            link.setAttribute('src', 'file://' + path);
-            document.head.appendChild(link);
+            delegatedRequires.push(path);
         }
     }
 
