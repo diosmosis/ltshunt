@@ -13,6 +13,8 @@ exports.new = function (name, options) {
         ':hidden': options.hidden || false
     };
 
+    optionsMap = cljs.map(optionsMap);
+
     return lt.objs.command.command(optionsMap);
 };
 

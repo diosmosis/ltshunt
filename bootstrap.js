@@ -1,5 +1,6 @@
 (function ltshuntImpl() {
     var lt = window.lt,
+        document = window.document,
         path = require('path'),
         fs = require('fs'),
         ltshunt = {};
@@ -17,7 +18,7 @@
     /**
      * TODO
      */
-    function bootstrap(pathToShunt) {
+    function bootstrap(pathToShunt, thisApp) {
         var pluginRoot = this.cpd(),
             componentsRoot = path.join(pluginRoot, 'components');
 
@@ -33,6 +34,8 @@
         components.forEach(function (name) {
             loadComponent(name);
         });
+
+        window.angular.bootstrap(document, [thisApp]);
 
         function loadComponent(name) {
             var files = walk(path.join(componentsRoot, name));
