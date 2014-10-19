@@ -5,6 +5,13 @@ var exports = {},
 /**
  * TODO
  */
+exports.invoke = function (callback) {
+    angular.element(document).injector().invoke(callback);
+};
+
+/**
+ * TODO
+ */
 exports.directive = function (appName, directiveName, attributes) {
     var element = window.document.createElement(directiveName);
     for (var key in attributes) {
@@ -15,7 +22,7 @@ exports.directive = function (appName, directiveName, attributes) {
         element.setAttribute(key, attributes[key]);
     }
 
-    angular.element(document).injector().invoke(function ($compile, $rootScope) {
+    exports.invoke(function ($compile, $rootScope) {
         $compile(element)($rootScope.$new());
     });
 

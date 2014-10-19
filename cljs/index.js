@@ -31,7 +31,8 @@ exports.set = function () {
             continue;
         }
 
-        pairs.push([arguments[key], null]);
+        pairs.push(arguments[key]);
+        pairs.push(null);
     }
 
     return new cljs.core.PersistentHashSet(
@@ -45,7 +46,7 @@ exports.set = function () {
  * TODO
  */
 exports.pairsToMap = function (pairs) {
-    return new cljs.core.PersistentArrayMap(null, pairs.length, pairs, null);
+    return new cljs.core.PersistentArrayMap(null, pairs.length / 2, pairs, null);
 };
 
 /**

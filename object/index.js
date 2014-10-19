@@ -23,12 +23,10 @@ exports.type = function (typename, properties) {
         ];
 
     if (properties[':tags']) {
-        var setElements = [];
-        for (var i = 0; i != properties[':tags'].length; ++i) {
-            var tagName = properties[':tags'][i].substring(1);
-            setElements.push(cljs.keyword(tagName, null));
-        }
-        properties[':tags'] = cljs.set(setElements);
+        var setElements = properties[':tags'].map(function (keyword) {
+            return cljs.keyword(keyword.substr(1), null);
+        });
+        properties[':tags'] = cljs.set.apply(null, setElements);
     }
 
     for (var key in properties) {
