@@ -44,6 +44,8 @@
             window.less.refresh(window.less.env === 'development');
         }
 
+        reloadUserBehaviors();
+
         function loadApp() {
             var appFile = path.join(componentsRoot, 'app.js');
 
@@ -114,13 +116,18 @@
         function loadLtJsFile(path) {
             delegatedRequires.push(path);
         }
+
+        function reloadUserBehaviors() {
+            var appObj = window.cljs.core.first(lt.object.by_tag(ltshunt.cljs.keyword('app', null)));
+            lt.object.raise(appObj, ltshunt.cljs.keyword('behaviors.reload', null));
+        }
     }
 
     function requireLtShunt(pathToShunt) {
         var ltshuntReal = require(pathToShunt);
         ltshuntReal.cpd = ltshunt.cpd;
         ltshuntReal.bootstrap = ltshunt.bootstrap;
-        window.ltshunt = ltshuntReal;
+        window.ltshunt = ltshunt = ltshuntReal;
     }
 
     function walk(pathToWalk, output) {
