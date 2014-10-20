@@ -31,13 +31,16 @@
             return;
         }
 
+        ltshunt._currentAppName = thisApp; // TODO: use of 2 underscores above (__loaded) and one here (_currentAppName) is inconsistent
+
         loadApp();
         loadAllComponents();
-        bootstrapAngular();
 
         delegatedRequires.forEach(function (path) {
             loadJsFile(path);
         });
+
+        bootstrapAngular(thisApp);
 
         // make sure less files are loaded
         if (window.less) {
@@ -52,8 +55,9 @@
             require(appFile);
         }
 
-        function bootstrapAngular() {
-            window.angular.bootstrap(document, [thisApp]);
+        function bootstrapAngular(appName) {
+            window.angular.bootstrap(document, [appName]);
+            window.ltshunt.angularBootstrapped = true;
         }
 
         function loadAllComponents() {

@@ -1,6 +1,7 @@
 var exports = {},
     document = window.document,
-    angular = window.angular;
+    angular = window.angular,
+    ltshunt = window.ltshunt;
 
 /**
  * TODO
@@ -22,9 +23,11 @@ exports.directive = function (appName, directiveName, attributes) {
         element.setAttribute(key, attributes[key]);
     }
 
-    exports.invoke(function ($compile, $rootScope) {
-        $compile(element)($rootScope.$new());
-    });
+    if (ltshunt.angularBootstrapped) {
+        exports.invoke(function ($compile, $rootScope) {
+            $compile(element)($rootScope.$new());
+        });
+    }
 
     return element;
 };
